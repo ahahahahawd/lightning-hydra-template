@@ -1,0 +1,9 @@
+_target_: src.models.unet_shuffle_model.UNetShuffleLitModel
+
+in_c: 3
+out_c: 3
+num_feat: 16
+scale: 2
+
+lr: 0.001
+weight_decay: 0.0005

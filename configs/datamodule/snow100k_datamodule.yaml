@@ -1,0 +1,10 @@
+_target_: src.datamodules.snow_datamodule.PairedDataModule
+
+train_dir: '/data1/wangding/datasets/Snow100K/train/'
+test_dir: '/data1/wangding/datasets/Snow100K/test/Snow100K-S/'
+subdirs: ['synthetic', 'gt', 'mask']
+train_val_split: 0.7
+seed: 2020
+batch_size: 16
+num_workers: 8
+pin_memory: True

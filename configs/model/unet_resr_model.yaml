@@ -1,0 +1,9 @@
+_target_: src.models.unet_resr_model.UNetResRLitModel
+
+in_c: 3
+out_c: 3
+# num_feat: 16
+bilinear: True
+
+lr: 0.001
+weight_decay: 0.0005

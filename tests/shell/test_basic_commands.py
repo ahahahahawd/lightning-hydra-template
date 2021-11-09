@@ -25,7 +25,7 @@ def test_gpu():
     command = [
         "run.py",
         "++trainer.max_epochs=1",
-        "++trainer.gpus=1",
+        "++trainer.gpus=7,",
     ]
     run_command(command)
 
@@ -36,7 +36,7 @@ def test_mixed_precision():
     command = [
         "run.py",
         "++trainer.max_epochs=1",
-        "++trainer.gpus=1",
+        "++trainer.gpus=7,",
         "++trainer.precision=16",
     ]
     run_command(command)

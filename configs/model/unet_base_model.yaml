@@ -1,0 +1,10 @@
+_target_: src.models.unet_base_model.UNetLitModel
+
+in_c: 3
+out_c: 3
+# num_feat: 64
+bilinear: bool = True,
+
+
+lr: 0.001
+weight_decay: 0.0005

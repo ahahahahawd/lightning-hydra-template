@@ -1,0 +1,10 @@
+_target_: src.datamodules.snow_datamodule.PairedDataModule
+
+train_dir: '/data1/wangding/datasets/CSD/Train/'
+test_dir: '/data1/wangding/datasets/CSD/Test/'
+subdirs: ['Snow', 'Gt', 'Mask']
+train_val_split: 0.7
+seed: 2020
+batch_size: 16
+num_workers: 4
+pin_memory: True
