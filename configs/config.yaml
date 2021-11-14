@@ -4,8 +4,8 @@
 defaults:
   - _self_
   - trainer: default.yaml
-  - model: unet_shuffle_model.yaml
-  - datamodule: snow100k_datamodule.yaml
+  - model: unet_resr_model.yaml
+  - datamodule: snow100k_dm.yaml
   - callbacks: snow.yaml
   - logger: tensorboard.yaml # set logger here or use command line (e.g. `python run.py logger=wandb`)
 

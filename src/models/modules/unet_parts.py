@@ -1,9 +1,9 @@
+
 """ Parts of the U-Net model """
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 class DoubleConv(nn.Module):
     """(convolution => [BN] => ReLU) * 2"""
@@ -91,4 +91,18 @@ class ResBlock(nn.Module):
         x = self.res_conv(x)
         x = F.relu(x + resx)
         return x
+
+
+class DownUseConv(nn.Module):
+    """Downscaling with conv then double conv"""
+
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.conv_conv = nn.Sequential(
+            nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=2, padding=1),
+            DoubleConv(in_channels, out_channels)
+        )
+
+    def forward(self, x):
+        return self.conv_conv(x)
 

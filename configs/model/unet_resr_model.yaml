@@ -1,4 +1,4 @@
-_target_: src.models.unet_resr_model.UNetResRLitModel
+_target_: src.models.unet_base_model.UNetResRLitModel
 
 in_c: 3
 out_c: 3

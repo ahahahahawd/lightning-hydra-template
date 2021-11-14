@@ -1,16 +1,15 @@
 import os
-import pathlib
 from typing import Tuple
 from PIL import Image
 import numpy as np
 
-import torch
 from torch.utils.data import DataLoader, random_split, Dataset
 
 import pytorch_lightning as pl
+from torchvision import transforms
 
-from .tsfm import tsfmTrainFakeSnow, tsfmTestFakeSnow, tsfmTrainNoiseFakeSnow
-from .utils import get_image_path_list, get_path_by_name
+from .tsfm import tsfmTrainFakeSnow, tsfmValFakeSnow, tsfmTestFakeSnow
+from .utils import get_image_path_list
 
 
 class PairedSnowDataset(Dataset):
@@ -24,7 +23,12 @@ class PairedSnowDataset(Dataset):
 
     """
 
-    def __init__(self, data_dir, subdirs, transform):
+    def __init__(
+        self,
+        data_dir: str = 'data/',
+        subdirs: Tuple[str, str, str] = ('synthetic', 'gt', 'mask'),
+        transform=tsfmTrainFakeSnow(),
+    ):
         self.transform = transform
         self.images_synthetic, self.images_gt, self.images_mask = map(
             lambda x: get_image_path_list(os.path.join(data_dir, x)), subdirs)
@@ -32,13 +36,20 @@ class PairedSnowDataset(Dataset):
 
     def __getitem__(self, idx):
         # open image
-        img_synthetic, img_gt, img_mask = map(
-            lambda x: np.array(Image.open(x[idx])), [self.images_synthetic, self.images_gt, self.images_mask])
+        # img_synthetic, img_gt, img_mask = map(
+        #     lambda x: np.array(Image.open(x[idx])), [self.images_synthetic, self.images_gt, self.images_mask])
+
+        # # transform using albumentations
+        # img_synthetic, img_gt, img_mask = self.transform([img_synthetic, img_gt, img_mask])
 
         # transform using albumentations
-        img_synthetic, img_gt, img_mask = self.transform(img_synthetic, img_gt, img_mask)
+        img_synthetic, img_gt = self.transform([
+            map(
+                lambda x: np.array(Image.open(x[idx])), [self.images_synthetic, self.images_gt]
+                )
+            ])
 
-        return img_synthetic, img_gt, img_mask
+        return img_synthetic, img_gt, None
 
     def __len__(self):
         return len(self.images_synthetic)
@@ -54,7 +65,11 @@ class SingleSnowDataset(Dataset):
 
     """
 
-    def __init__(self, data_dir, transform):
+    def __init__(
+        self,
+        data_dir: str = 'data/',
+        transform=transforms.ToTensor(),
+    ):
         self.transform = transform
         self.images_real = get_image_path_list(data_dir)
 
@@ -65,7 +80,6 @@ class SingleSnowDataset(Dataset):
 
     def __len__(self):
         return len(self.images_real)
-
 
 
 if __name__ == '__main__':

@@ -6,10 +6,10 @@
 defaults:
   - override /mode: exp.yaml
   - override /trainer: default.yaml
-  - override /model: unet_resr_model.yaml
-  - override /datamodule: csd_datamodule.yaml
+  - override /model: unet_base_model.yaml
+  - override /datamodule: csd_dm.yaml
   - override /callbacks: snow.yaml
-  - override /logger: many_loggers.yaml
+  - override /logger: tensorboard.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters
@@ -17,21 +17,16 @@ defaults:
 # name of the run determines folder name in logs
 # it's also accessed by loggers
 # name: mode_model_dm_train
-name: "snow_ablation_UNetResR_CSD_E400B16G1"
+name: "snow_ablation_UNet_CSD_E400B16G1"
 
 seed: 2020
 
 trainer:
-#   min_epochs: 1
   max_epochs: 400
-  gradient_clip_val: 0.5
+  # gradient_clip_val: 0.5
 
 model:
-#   lin1_size: 128
-#   lin2_size: 256
-#   lin3_size: 64
   lr: 0.0001
 
 datamodule:
-  batch_size: 32
-#   train_val_test_split: [55_000, 5_000, 10_000]
+  batch_size: 16

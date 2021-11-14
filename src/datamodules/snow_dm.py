@@ -1,57 +1,46 @@
-import os
-import pathlib
-from typing import Tuple
-from PIL import Image
-import numpy as np
-
 import torch
-from torch.utils.data import DataLoader, random_split, Dataset
+from torch.utils.data import DataLoader, random_split
 
 import pytorch_lightning as pl
 
 from src.datamodules.datasets.dataset import PairedSnowDataset
-from src.datamodules.datasets.tsfm import tsfmTrainFakeSnow, tsfmTestFakeSnow, tsfmTrainNoiseFakeSnow
-from src.datamodules.datasets.utils import get_path_by_name
+from src.datamodules.datasets.tsfm import tsfmTrainFakeSnow, tsfmValFakeSnow, tsfmTestFakeSnow
+from src.datamodules.datasets.utils import get_long_path_by_short_name
 
 
 
 
-class PairedDataModule(pl.LightningDataModule):
+class PairedSnowDataModule(pl.LightningDataModule):
     """
-    PairedDataModule for image snow remove
+    PairedSnowDataModule for image snow remove
 
     Args::
-        data_dir: 'data/', short name for Snow100K dataset or root dir of the images
-        batch_size: 16, 
-        test_ds: 'fake', choose fake or real dataset when using dm.setup('test')
-    Example::
-        from src.data.snow import SnowDataModule
-        dm = SnowDataModule(
-            batch_size=16,
-            data_dir='all')
-        dm.setup('fit')
+        train_dir: 'data/train', root directory for fake snow images
+        test_dir: 'data/test', root directory for fake snow images
+        subdirs: ['synthetic', 'gt', 'mask'], subdirectories for fake snow images
+        train_val_split: 0.7, train/val split ratio
+        seed: 2020, random seed
+        batch_size: 16, batch size
+        num_workers: 0, number of workers
+        pin_memory: True, whether to use pin memory
     """
 
     def __init__(
         self,
-        # data_dir: str = 'data/train',
         train_dir: str = 'data/train',
         test_dir: str = 'data/test',
         subdirs: list = ['synthetic', 'gt', 'mask'],
         train_val_split: float = 0.7,
         seed: int = 2020,
         batch_size: int = 16,
-        # test_ds='fake',
         num_workers: int = 0,
         pin_memory: bool = True,
     ):
         super().__init__()
-        self.save_hyperparameters(logger=False)
-
-        #self.data_dir = get_path_by_name(data_dir)
+        self.save_hyperparameters()
 
         self.tsfm_train = tsfmTrainFakeSnow()
-        self.tsfm_val = tsfmTrainFakeSnow()
+        self.tsfm_val = tsfmValFakeSnow()
         self.tsfm_test = tsfmTestFakeSnow()
 
     def prepare_data(self):
@@ -113,9 +102,9 @@ class PairedDataModule(pl.LightningDataModule):
 
 
 if __name__ == '__main__':
-    dm = PairedDataModule(
-        train_dir=get_path_by_name('all'),
-        test_dir=get_path_by_name('S'),
+    dm = PairedSnowDataModule(
+        train_dir=get_long_path_by_short_name('all'),
+        test_dir=get_long_path_by_short_name('S'),
         batch_size=4,
     )
     dm.prepare_data()
